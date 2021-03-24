@@ -1,7 +1,32 @@
 # write your code here
-
 x_plays = 0
 o_plays = 0
+cells = [['_' for y in range(0, 3)] for x in range(0, 3)]
+turn = 'X'
+
+
+def start_game():
+    is_over = False
+    while not is_over:
+        print_board()
+        check_input()
+        if x_plays > 2:
+            message = who_won()
+            print('HELLO MESSAGE')
+            print(message)
+            if message != '':
+                print_board()
+                print(message)
+                break
+        change_turn()
+
+
+def change_turn():
+    global turn
+    if turn == 'X':
+        turn = 'O'
+    else:
+        turn = 'X'
 
 
 def symbol_lines(__cells, symbol):
@@ -34,44 +59,37 @@ def symbol_lines(__cells, symbol):
     return lines
 
 
-def count_plays(__raw_input):
-    global x_plays
-    x_plays = 0
-    global o_plays
-    o_plays = 0
-    for s in __raw_input:
-        if s == 'X':
-            x_plays += 1
-        elif s == 'O':
-            o_plays += 1
-    return [x_plays, o_plays]
-
-
-def who_won(__cells):
+def who_won():
     global x_plays
     global o_plays
-    global raw_input
-    [x_plays, o_plays] = count_plays(raw_input)
+    global cells
     difference_between = abs(x_plays - o_plays)
-    x_lines = symbol_lines(__cells, 'X')
-    o_lines = symbol_lines(__cells, 'O')
+    x_lines = symbol_lines(cells, 'X')
+    o_lines = symbol_lines(cells, 'O')
     if difference_between > 1 or (difference_between <= 1 and 0 < x_lines == o_lines):
-        pass # print('Impossible')
-        return
+        return 'Impossible'
     if x_lines == o_lines and x_lines == 0:
+        print(x_plays + o_plays)
         if (x_plays + o_plays) == 9:
-            pass # print('Draw')
+            return 'Draw'
         else:
-            pass # print('Game not finished')
+            return ''
     if x_lines > o_lines:
-        pass # print('X wins')
+        return 'X wins'
     elif o_lines > x_lines:
-        pass # print('O wins')
+        return 'O wins'
 
 
 def move(x, y):
     global cells
-    cells[x][y] = 'X'
+    global turn
+    global x_plays
+    global o_plays
+    cells[x][y] = turn
+    if turn == 'X':
+        x_plays += 1
+    else:
+        o_plays += 1
 
 
 def check_input():
@@ -106,10 +124,5 @@ def print_board():
         print(row_to_print, '|')
     print('---------')
 
-raw_input = input('Enter cells:')
-cells = list(raw_input)
-cells = [cells[i * 3:(i + 1) * 3] for i in range((len(cells) + 3 - 1) // 3)]
-print_board()
-who_won(cells)
-check_input()
-print_board()
+
+start_game()
